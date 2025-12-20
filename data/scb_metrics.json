@@ -1,36 +1,8 @@
-import requests
-import pandas as pd
-
-def fetch_scb_data(url, name, filename, query, aggregate):
-
-    r = requests.post(url, json=query)
-    r.raise_for_status()
-    data = r.json()["data"]
-
-    df = pd.DataFrame([
-        {"date": d["key"][-1], name: float(d["values"][0])}
-        for d in data
-    ])
-
-    if aggregate: # Summera om samma månad förekommer flera gånger
-        df = (
-            df
-            .groupby("date", as_index=False)
-            .sum()
-            .rename(columns={"value": name})
-        )
-
-    df = df.iloc[::-1].reset_index(drop=True)
-
-    df.to_csv(f"raw_data/{filename}", index=False)
-    print(f"Saved {filename}")
-
-# All metrics and their query
-metrics = [
-    {
-        "name": "kpi",
+[
+  {
+        "name": "CPI",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/PR/PR0101/PR0101A/KPItotM",
-        "filename": "kpi.csv",
+        "filename": "consumer_price_index.csv",
         "query": {
             "query": [
                 {
@@ -52,13 +24,13 @@ metrics = [
                 "format": "JSON"
             }
         },
-        "aggregate": False
+        "aggregate": false
     },
 
     {
-        "name": "statsskuld",
+        "name": "GD",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/OE/OE0202/OE0202A/StatsskuldNy",
-        "filename": "statsskuld.csv",
+        "filename": "government_debt.csv",
         "query": {
             "query": [
                 {
@@ -80,13 +52,13 @@ metrics = [
                 "format": "JSON"
             }
         },
-        "aggregate": False
+        "aggregate": false
     },
 
     {
-        "name": "arbetsloshet",
+        "name": "UR",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/AM/AM0401/AM0401A/AKURLBefM",
-        "filename": "arbetsloshet.csv",
+        "filename": "unemployment_rate.csv",
         "query": {
             "query": [
                 {
@@ -129,13 +101,13 @@ metrics = [
                 "format": "JSON"
             }
         },
-        "aggregate": False
+        "aggregate": false
     },
 
     {
-        "name": "penningmangd",
+        "name": "MSR",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/FM/FM5001/FM5001A/FM5001penningmangd",
-        "filename": "penningmangd.csv",
+        "filename": "money_supply_growth.csv",
         "query": {
             "query": [
                 {
@@ -157,13 +129,13 @@ metrics = [
                 "format": "JSON"
             }
         },
-        "aggregate": False
+        "aggregate": false
     },
 
     {
-        "name": "bolaneranta",
+        "name": "MIR",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/FM/FM5001/FM5001X/NTFM5001",
-        "filename": "bolaneranta.csv",
+        "filename": "mortgage_interest_rate.csv",
         "query": {
             "query": [
                 {
@@ -185,13 +157,13 @@ metrics = [
                 "format": "JSON"
             }
         },
-        "aggregate": False
+        "aggregate": false
     },
 
     {
-        "name": "elanvandning",
+        "name": "EC",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/EN/EN0108/EN0108A/ElanvM",
-        "filename": "elanvandning.csv",
+        "filename": "electricity_consumption.csv",
         "query": {
             "query": [
                 {
@@ -213,13 +185,13 @@ metrics = [
                 "format": "JSON"
             }
         },
-        "aggregate": False
+        "aggregate": false
     },
 
     {
-        "name": "befolkning1",
+        "name": "Pop",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/BE/BE0101/BE0101A/BefolkManadCKM",
-        "filename": "befolkning1.csv",
+        "filename": "population_25.csv",
         "query": {
   "query": [
     {
@@ -254,13 +226,13 @@ metrics = [
     "format": "JSON"
   }
 },
-"aggregate": False
+"aggregate": false
     },
 
     {
-        "name": "befolkning2",
+        "name": "Pop",
         "url": "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/BE/BE0101/BE0101A/BefolkManad",
-        "filename": "befolkning2.csv",
+        "filename": "population_00-24.csv",
         "query": {
   "query": [
     {
@@ -306,25 +278,6 @@ metrics = [
     "format": "JSON"
   }
 },
-"aggregate": True
+"aggregate": true
     }
-
 ]
-
-for metric in metrics:
-    fetch_scb_data(
-        url=metric["url"],
-        name=metric["name"],
-        filename=metric["filename"],
-        query=metric["query"],
-        aggregate= metric["aggregate"]
-    )
-
-# KPI - fastställda tal
-# Statsskuld - total alla markander
-# Arbetslöshet AKU - procent, Icke säsongrensad, Total män och kvinnor, Totalt 15-74 år	
-# Pänningmängd - Tillväxttakt 12-månaders, procent efter penningmängdsmått och månad
-# Bolåneränta (nyckeltal) - genomsnitt, procentssats
-# Elanvändning - summa förburkad el
-# Befolkning1 - totalt år 2025
-# Befolkning2 - totalt år 2000-2024
