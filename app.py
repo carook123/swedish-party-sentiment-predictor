@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 from threading import Timer
 import webbrowser
 
+from src.predict_sentiment import predict_sentiment
+
 # Server constants
 port = 8050
 host = "localhost"
@@ -392,6 +394,23 @@ app.layout = html.Div(
         )
     ],
 )
+
+
+def predict(cpi, ec, gd, msr, mir, pop, ur):
+
+    user_input = {
+        'CPI': cpi,
+        'EC': ec,
+        'GD': gd,
+        'MSR': msr,
+        'MIR': mir,
+        'Pop': pop,
+        'UR': ur
+        }
+    
+    preds = predict_sentiment(user_input)
+    
+    return None
 
 if __name__ == "__main__":
     Timer(1, open_browser).start()
