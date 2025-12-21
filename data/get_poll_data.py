@@ -135,7 +135,7 @@ def normalize_percentages(df: pd.DataFrame) -> pd.DataFrame:
     new_df[party_cols] = new_df[party_cols].apply(pd.to_numeric, errors="coerce")
 
     for i in range(len(new_df)):
-        row = new_df.loc[i, party_cols]
+        row = new_df.loc[i, party_cols] # type: ignore
 
         # Parties that "exist" this month
         mask = row.notna()
