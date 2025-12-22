@@ -47,7 +47,7 @@ Before running the project, ensure the following directory structure exists:
 project-root/
 │
 ├── app.py
-├── models/          # must be created manually
+├── models/          
 ├── src/
 │   ├── main.py
 │   ├── data_loader.py
@@ -56,29 +56,30 @@ project-root/
 └── data/
     └── raw_data/
 ```
+The `models/` directory already contains trained models, so you do not need to train them before running the application.
 
-Create the `models` directory manually if it does not already exist:
+### 3. Launch the application
+
+From the project root, start the Dash app:
 ```bash
-mkdir models
+python app.py
 ```
 
-### 3. Train the models
-From the project root, run the main training script:
+This will launch a local web server.
+Once the app is running, users can input values for the economic indicators and receive predicted polling sentiment for all Swedish political parties.
+
+### 4. (Optional) Retrain the models
+If you want to retrain the models yourself (for example, using updated data or different parameters), you can do so from the project root by running the main script:
 ```bash
 python src/main.py
 ```
 This will:
 1. Load and merge the raw data files
-2. Format the dataset and remove invalid rows
+2. Clean and format the dataset
 3. Train one Random Forest regression model per political party
-4. Save the trained models as .joblib files inside the models/ directory
+4. Overwrite the existing `.joblib` files inside the `models/` directory
 
-These saved models are later used by the application to make predictions.
-
-### 4. Launch the application
-
-Once the models have been trained and saved, the application can be started.
-After launching the app, users will be able to input values for the economic indicators and receive predicted sentiment scores for all parties.
+After retraining, the application will automatically use the newly trained models.
 
 ## Authors
 * [Carolina Oker-Blom](https://github.com/carook123)
