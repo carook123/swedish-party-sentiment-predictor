@@ -5,6 +5,8 @@ from threading import Timer
 import webbrowser
 
 from src.predict_sentiment import predict_sentiment
+from dash import Input, Output, State
+
 
 # Server constants
 port = 8050
@@ -395,8 +397,22 @@ app.layout = html.Div(
     ],
 )
 
+@app.callback(
+    Output("party-bar-chart", "figure"),
+    Input("submit-btn", "n_clicks"),
+    State("metric-1", "value"),  # CPI
+    State("metric-2", "value"),  # EC
+    State("metric-3", "value"),  # GD
+    State("metric-4", "value"),  # MSR
+    State("metric-5", "value"),  # MIR
+    State("metric-6", "value"),  # Pop
+    State("metric-7", "value"),  # UR
+    prevent_initial_call=True,
+)
 
-def predict(cpi, ec, gd, msr, mir, pop, ur):
+
+
+def predict(n_clicks, cpi, ec, gd, msr, mir, pop, ur):
 
     user_input = {
         'CPI': cpi,
@@ -408,10 +424,33 @@ def predict(cpi, ec, gd, msr, mir, pop, ur):
         'UR': ur
         }
     
-    preds = predict_sentiment(user_input)
+    predictions = predict_sentiment(user_input)
     
-    return None
+    # Keep party order consistent with chart
+    parties = ["M", "L", "C", "KD", "S", "V", "MP", "SD"]
+    values = [predictions[p] for p in parties]
+
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                x=parties,
+                y=values,
+                marker=dict(color=[party_colors[p] for p in parties]),
+            )
+        ]
+    )
+
+    fig.update_layout(
+        xaxis_title="Party",
+        yaxis_title="Predicted percentage",
+        margin=dict(l=30, r=30, t=30, b=30),
+        height=420,
+    )
+
+    return fig
+
+
 
 if __name__ == "__main__":
     Timer(1, open_browser).start()
-    app.run_server(debug=False, port=port, host=host)
+    app.run_server(debug=False, port=port, host=host) #Jag behövde ändra från app.run_server() till app.run() för att få servern att köras
