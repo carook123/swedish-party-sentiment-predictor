@@ -30,7 +30,7 @@ The Swedish poll data is retrieved from the repository [Swedish Polls](https://g
 |SD|Sweden Democrats|
 
 ## How to run
-1. Install dependencies
+### 1. Install dependencies
 Make sure you have Python 3.9+ installed. The project relies on standard data science libraries such as:
 
 - pandas
@@ -40,9 +40,10 @@ Make sure you have Python 3.9+ installed. The project relies on standard data sc
 
 You can install them manually.
 
-2. Project structure
+### 2. Project structure
 Before running the project, ensure the following directory structure exists:
 
+```bash
 project-root/
 │
 ├── app.py
@@ -54,16 +55,18 @@ project-root/
 │   └── predict_sentiment.py
 └── data/
     └── raw_data/
+```
 
 Create the `models` directory manually if it does not already exist:
 ```bash
 mkdir models
+```
 
-3. Train the models
+### 3. Train the models
 From the project root, run the main training script:
-
+```bash
 python src/main.py
-
+```
 This will:
 1. Load and merge the raw data files
 2. Format the dataset and remove invalid rows
@@ -72,7 +75,7 @@ This will:
 
 These saved models are later used by the application to make predictions.
 
-4. Launch the application
+### 4. Launch the application
 
 Once the models have been trained and saved, the application can be started.
 After launching the app, users will be able to input values for the economic indicators and receive predicted sentiment scores for all parties.
