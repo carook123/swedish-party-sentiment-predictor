@@ -31,14 +31,11 @@ The Swedish poll data is retrieved from the repository [Swedish Polls](https://g
 
 ## How to run
 ### 1. Install dependencies
-Make sure you have Python 3.9+ installed. The project relies on standard data science libraries such as:
+Make sure you have Python 3.9+ installed. The project relies on standard data science libraries found in requirements.txt. Install these in your chosen environment using.
 
-- pandas
-- scikit-learn
-- joblib
-- dash (for the front-end)
-
-You can install them manually.
+```bash
+pip install -r requirements.txt
+```
 
 ### 2. Project structure
 Before running the project, ensure the following directory structure exists:
