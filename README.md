@@ -30,6 +30,52 @@ The Swedish poll data is retrieved from the repository [Swedish Polls](https://g
 |SD|Sweden Democrats|
 
 ## How to run
+1. Install dependencies
+Make sure you have Python 3.9+ installed. The project relies on standard data science libraries such as:
+
+- pandas
+- scikit-learn
+- joblib
+- dash (for the front-end)
+
+You can install them manually.
+
+2. Project structure
+Before running the project, ensure the following directory structure exists:
+
+project-root/
+│
+├── app.py
+├── models/          # must be created manually
+├── src/
+│   ├── main.py
+│   ├── data_loader.py
+│   ├── train_models.py
+│   └── predict_sentiment.py
+└── data/
+    └── raw_data/
+
+Create the `models` directory manually if it does not already exist:
+```bash
+mkdir models
+
+3. Train the models
+From the project root, run the main training script:
+
+python src/main.py
+
+This will:
+1. Load and merge the raw data files
+2. Format the dataset and remove invalid rows
+3. Train one Random Forest regression model per political party
+4. Save the trained models as .joblib files inside the models/ directory
+
+These saved models are later used by the application to make predictions.
+
+4. Launch the application
+
+Once the models have been trained and saved, the application can be started.
+After launching the app, users will be able to input values for the economic indicators and receive predicted sentiment scores for all parties.
 
 ## Authors
 * [Carolina Oker-Blom](https://github.com/carook123)
