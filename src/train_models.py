@@ -63,14 +63,14 @@ def train_party_model(df: pd.DataFrame, X: pd.DataFrame, parties: list) -> dict:
 
         models[party] = model
         
-        joblib.dump(model, f"../models/rf_{party}.joblib")
+        joblib.dump(model, f"models/rf_{party}.joblib")
 
     metrics["average"] = {
         "mse": float(sum(mse_scores) / len(mse_scores)),
         "r2": float(sum(r2_scores) / len(r2_scores))
     }
     
-    joblib.dump(metrics, "../models/model_metrics.joblib")
+    joblib.dump(metrics, "models/model_metrics.joblib")
 
     return models
 

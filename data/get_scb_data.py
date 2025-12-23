@@ -20,7 +20,7 @@ def fetch_scb_data(url, name, filename, query, aggregate):
         for d in data
     ])
     
-    #Matching date-format (YYYY-MM) for all data
+    # Matching date-format (YYYY-MM) for all data
     df["date"] = (
         df["date"]
         .astype(str)
@@ -47,7 +47,6 @@ metrics = []
 with open("data/scb_metrics.json", "r", encoding="utf-8") as f:
     metrics = json.load(f)
 
-
 for metric in metrics:
     fetch_scb_data(
         url=metric["url"],
@@ -56,3 +55,7 @@ for metric in metrics:
         query=metric["query"],
         aggregate= metric["aggregate"]
     )
+
+# Combining population 00-24 and population 25 into one csv file
+population = pd.concat([pd.read_csv("data/raw_data/population_25.csv"), pd.read_csv("data/raw_data/population_00-24.csv")], ignore_index=True)
+population.to_csv("data/raw_data/population_00-25.csv", index=False)

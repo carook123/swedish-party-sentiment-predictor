@@ -9,14 +9,16 @@ files = {
     'GD': 'government_debt.csv',
     'MSR': 'money_supply_growth.csv',
     'MIR': 'mortgage_interest_rate.csv',
-    'Pop': 'population_00-24.csv',
+    'Pop': 'population_00-25.csv',
     'UR': 'unemployment_rate.csv'
     }
 
 
 def main():
     df = load_data(files)
+    df.to_csv("data/combined_data_full.csv", index=False)
     X = get_X(df)
+    X.to_csv("data/combined_data_full_X.csv", index=False)
     models = train_party_model(df, X, parties)
     print("Models trained and saved!")
     

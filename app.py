@@ -4,32 +4,44 @@ import plotly.graph_objects as go
 from threading import Timer
 import webbrowser
 import joblib
+import random
 
 from src.predict_sentiment import predict_sentiment
 from dash import Input, Output, State
-
 
 # Server constants
 port = 8050
 host = "localhost"
 
-#loading metrics
+# Loading evaluating metrics
 metrics = joblib.load("models/model_metrics.joblib")
 
 avg_r2 = metrics["average"]["r2"]
 avg_mse = metrics["average"]["mse"]
 
+# Metric-ranges for random input
+metric_ranges = {
+    "metric-1": (250, 420),          # CPI
+    "metric-2": (5000, 20000),       # EC
+    "metric-3": (1000000, 1300000),  # GD
+    "metric-4": (-15, 20),           # MSR
+    "metric-5": (1, 6),              # MIR
+    "metric-6": (10300000, 10500000),# Pop
+    "metric-7": (5, 11),             # UR
+}
 
 def open_browser(host=host, port=port) -> None:
     """
     Call to Webbrowser to open server when running
     """
-    webbrowser.open_new(f"http://{host}:{port}")
 
+    webbrowser.open_new(f"http://{host}:{port}")
 
 def _metric_input(label: str, component_id: str, placeholder: str, info_text: str):
     """Helper for a clean, consistent input card with clickable info button."""
-    info_div_id = f"{component_id}-info"  # unikt ID för info-div
+
+    info_div_id = f"{component_id}-info"  
+
     return html.Div(
         style={"minWidth": 0, "maxWidth": "60%"},
         children=[
@@ -91,7 +103,6 @@ def _metric_input(label: str, component_id: str, placeholder: str, info_text: st
             ),
         ],
     )
-
 
 app = dash.Dash(__name__)
 
@@ -276,7 +287,7 @@ app.layout = html.Div(
                         "marginBottom": "18px",
                     },
                     children=[
-                        # Title + model on the same row
+                        # Title + Random button on the same row
                         html.Div(
                             style={
                                 "display": "flex",
@@ -296,6 +307,20 @@ app.layout = html.Div(
                                         "color": "#0b1220",
                                     },
                                 ),
+                                html.Button(
+                                    "Random",
+                                    id="random-btn",
+                                    n_clicks=0,
+                                    style={
+                                        "border": "none",
+                                        "borderRadius": "12px",
+                                        "padding": "8px 16px",
+                                        "fontWeight": "700",
+                                        "cursor": "pointer",
+                                        "color": "white",
+                                        "background": "linear-gradient(135deg, #0d67df 0%, #003d99 100%)",
+                                    },
+                                ),                                
                             ],
                         ),
 
@@ -435,8 +460,6 @@ app.layout = html.Div(
                         html.Ul(
                             children=[
                                 html.Li("Model: Random Forest"),
-                                html.Li("Data set size used for training: xxx samples"),
-                                html.Li("Data set size used for testing: xxx samples"),
                                 html.Li(f"MSE score on test data: {avg_mse:.3f}"),
                                 html.Li(f"R² score on test data: {avg_r2:.3f}"),
                             ],
@@ -506,7 +529,6 @@ def predict(n_clicks, cpi, ec, gd, msr, mir, pop, ur):
         yaxis_title="Predicted percentage",
         margin=dict(l=30, r=30, t=30, b=30),
         height=420,
-        # 4 % - line
         shapes=[  
             dict(
                 type="line",
@@ -525,7 +547,7 @@ def predict(n_clicks, cpi, ec, gd, msr, mir, pop, ur):
 
     return fig
 
-for i in range(1, 8):  # för alla 7 metrics
+for i in range(1, 8):  # Callback for all 7 metrics
     @app.callback(
         Output(f"metric-{i}-info", "style"),
         Input(f"metric-{i}-btn", "n_clicks"),
@@ -533,12 +555,25 @@ for i in range(1, 8):  # för alla 7 metrics
         prevent_initial_call=True,
     )
     def toggle_info(n_clicks, current_style):
-        # Toggle mellan block/none
         if current_style["display"] == "none":
             current_style["display"] = "block"
         else:
             current_style["display"] = "none"
         return current_style
+
+@app.callback(
+    [Output(f"metric-{i}", "value") for i in range(1, 8)],
+    Input("random-btn", "n_clicks"),
+    prevent_initial_call=True
+)
+
+def randomize_metrics(n_clicks):
+    values = []
+    for i in range(1, 8):
+        min_val, max_val = metric_ranges[f"metric-{i}"]
+        val = round(random.uniform(min_val, max_val), 2) 
+        values.append(val)
+    return values
 
 if __name__ == "__main__":
     Timer(1, open_browser).start()

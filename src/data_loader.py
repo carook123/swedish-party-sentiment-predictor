@@ -22,7 +22,7 @@ def load_data(files: map) -> pd.DataFrame:
     dfs = []
     
     for col_name, file in files.items():
-        df = pd.read_csv(f'../data/raw_data/{file}')
+        df = pd.read_csv(f'data/raw_data/{file}')
         
         dfs.append(df)
 
@@ -31,7 +31,7 @@ def load_data(files: map) -> pd.DataFrame:
         dfs
     )
 
-    sentiment = pd.read_csv('../data/raw_data/polls.csv')
+    sentiment = pd.read_csv('data/raw_data/polls.csv')
     df = df.merge(sentiment, on='date', how='inner')
     
     df = df[df['date'] >= '2006-09']
@@ -40,9 +40,6 @@ def load_data(files: map) -> pd.DataFrame:
     
     return df
     
-
-
-
 def get_X(df):
     """
     Extract feature columns (X) from the full dataset by removing party polling columns.

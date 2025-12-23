@@ -51,7 +51,7 @@ def monthly_weighted_average(df: pd.DataFrame) -> pd.DataFrame:
 
     new_df = df.copy()
     
-    #Global sample size in case all rows in a group lacks n
+    # Global sample size in case all rows in a group lacks n
     global_mean_n = new_df["n"].mean()
 
     # Fill missing n per month with that month's mean n
@@ -74,7 +74,7 @@ def monthly_weighted_average(df: pd.DataFrame) -> pd.DataFrame:
 
         out[c] = weighted_sum / weight_sum.replace(0, pd.NA)
 
-    #Include date column and sort newest measurement first
+    # Include date column and sort newest measurement first
     out = out.sort_index(ascending=False)
     out = out.reset_index() 
     
