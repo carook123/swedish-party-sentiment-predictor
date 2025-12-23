@@ -30,8 +30,14 @@ The Swedish poll data is retrieved from the repository [Swedish Polls](https://g
 |SD|Sweden Democrats|
 
 ## How to run
-### 1. Install dependencies
-Make sure you have Python 3.9+ installed. The project relies on standard data science libraries found in requirements.txt. Install these in your chosen environment using.
+### 1. Installation
+Initially, clone the repository by running the following command from a directory of your choice:
+
+'''bash
+git clone https://github.com/carook123/swedish-party-sentiment-predictor.git
+'''
+
+Moving on, make sure you have Python 3.9+ installed. The project relies on standard data science libraries found in requirements.txt. Install these in your chosen environment using.
 
 ```bash
 pip install -r requirements.txt
