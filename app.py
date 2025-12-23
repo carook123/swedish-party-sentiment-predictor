@@ -20,13 +20,11 @@ def open_browser(host=host, port=port) -> None:
     webbrowser.open_new(f"http://{host}:{port}")
 
 
-def _metric_input(label: str, component_id: str, placeholder: str):
-    """Helper for a clean, consistent input card."""
+def _metric_input(label: str, component_id: str, placeholder: str, info_text: str):
+    """Helper for a clean, consistent input card with clickable info button."""
+    info_div_id = f"{component_id}-info"  # unikt ID för info-div
     return html.Div(
-        style={
-            "minWidth": 0,  # important so CSS grid can shrink properly
-            "maxWidth": "60%",
-        },
+        style={"minWidth": 0, "maxWidth": "60%"},
         children=[
             html.Label(
                 label,
@@ -39,20 +37,49 @@ def _metric_input(label: str, component_id: str, placeholder: str):
                     "marginBottom": "6px",
                 },
             ),
-            dcc.Input(
-                id=component_id,
-                type="number",
-                placeholder=placeholder,
-                inputMode="decimal",
+            html.Div(
+                style={"display": "flex", "alignItems": "center", "gap": "6px"},
+                children=[
+                    dcc.Input(
+                        id=component_id,
+                        type="number",
+                        placeholder=placeholder,
+                        inputMode="decimal",
+                        style={
+                            "flex": 1,
+                            "borderRadius": "12px",
+                            "border": "1px solid rgba(11,18,32,0.12)",
+                            "padding": "10px 12px",
+                            "fontSize": "14px",
+                            "outline": "none",
+                            "backgroundColor": "white",
+                        },
+                    ),
+                    html.Button(
+                        "ⓘ",
+                        id=f"{component_id}-btn",
+                        n_clicks=0,
+                        style={
+                            "border": "none",
+                            "background": "none",
+                            "cursor": "pointer",
+                            "color": "#0d67df",
+                            "fontWeight": "900",
+                            "fontSize": "16px",
+                        },
+                    ),
+                ],
+            ),
+            html.Div(
+                info_text,
+                id=info_div_id,
                 style={
-                    "width": "100%",
-                    "boxSizing": "border-box",
-                    "borderRadius": "12px",
-                    "border": "1px solid rgba(11,18,32,0.12)",
-                    "padding": "10px 12px",
-                    "fontSize": "14px",
-                    "outline": "none",
-                    "backgroundColor": "white",
+                    "display": "none",
+                    "backgroundColor": "#f0f0f0",
+                    "padding": "8px",
+                    "borderRadius": "6px",
+                    "marginTop": "4px",
+                    "fontSize": "12px",
                 },
             ),
         ],
@@ -72,16 +99,6 @@ app.index_string = """
         {%css%}
         <style>
             html, body { height: 100%; margin: 0; padding: 0; }
-
-            /* --- Segmented control styling for model-choice --- */
-            .segmented {
-                display: inline-flex;
-                gap: 6px;
-                padding: 6px;
-                border-radius: 14px;
-                background: rgba(11,18,32,0.06);
-                border: 1px solid rgba(11,18,32,0.10);
-            }
 
             .segmented label {
                 display: inline-flex;
@@ -175,6 +192,21 @@ bar_fig.update_layout(
     yaxis_title="Percentage of votes",
     margin=dict(l=30, r=30, t=30, b=30),
     height=420,
+    # 4 % - line
+    shapes=[  
+        dict(
+            type="line",
+            x0=-0.5,     
+            x1=7.5,       
+            y0=4,         
+            y1=4,        
+            line=dict(
+                color="red", 
+                width=2, 
+                dash="dash"  
+            ),
+        )
+    ]
 )
 
 # ---- Layout ----
@@ -257,33 +289,6 @@ app.layout = html.Div(
                                         "color": "#0b1220",
                                     },
                                 ),
-                                html.Div(
-                                    style={
-                                        "display": "flex",
-                                        "alignItems": "center",
-                                        "gap": "10px",
-                                    },
-                                    children=[
-                                        html.Div(
-                                            "Model",
-                                            style={
-                                                "fontSize": "12px",
-                                                "fontWeight": "800",
-                                                "color": "rgba(11,18,32,0.75)",
-                                            },
-                                        ),
-                                        dcc.RadioItems(
-                                            id="model-choice",
-                                            className="segmented",
-                                            options=[
-                                                {"label": "Linear Regression", "value": "linreg"},
-                                                {"label": "Random Forest", "value": "rf"},
-                                            ],
-                                            value="linreg",
-                                            inline=True,
-                                        ),
-                                    ],
-                                ),
                             ],
                         ),
 
@@ -296,13 +301,28 @@ app.layout = html.Div(
                                 "alignItems": "end",
                             },
                             children=[
-                                _metric_input("Consumer Price Index", "metric-1", "To be implemented"),
-                                _metric_input("Electricity Consumption", "metric-2", "To be implemented"),
-                                _metric_input("Government Debt", "metric-3", "To be implemented"),
-                                _metric_input("Money Supply Growth", "metric-4", "To be implemented"),
-                                _metric_input("Mortgage Interest Rate", "metric-5", "To be implemented"),
-                                _metric_input("Population", "metric-6", "To be implemented"),
-                                _metric_input("Unemployment Rate", "metric-7", "To be implemented"),
+                                _metric_input("Consumer Price Index", "metric-1", "Insert value",
+                                              "Measures changes in consumer prices over time using official CPI values. "
+                                              "Typical index range: 250–420 (base year 1980 = 100)."),
+                                _metric_input("Electricity Consumption", "metric-2", "Insert value",
+                                              "Measures total monthly electricity consumption (GWh). "
+                                              "Transit exports via Sweden are included. "
+                                              "Typical index range: 5000–20000 GWh per month. "),
+                                _metric_input("Government Debt", "metric-3", "Insert value",
+                                              "Official measure of the Swedish government’s gross debt (million SEK). "
+                                              "Typical index range: 1,000,000–1,300,000 million SEK"),
+                                _metric_input("Money Supply Growth", "metric-4", "Insert value",
+                                              "Measures the 12-month growth rate of the money supply (%) according to the selected monetary aggregate. "
+                                              "Typical index range: -15-20%."),
+                                _metric_input("Mortgage Interest Rate", "metric-5", "Insert value",
+                                              "Average mortgage interest rate for new household loans (%) according to MFIs. "
+                                              "Typical index range: 1–6%."),
+                                _metric_input("Population", "metric-6", "Insert value",
+                                              "Total population of Sweden by month. "
+                                              "Typical index range: 10,300,000–10,500,000 people."),
+                                _metric_input("Unemployment Rate", "metric-7", "Insert value",
+                                              "Non-seasonally adjusted unemployment rate (%) for total population aged 15–74. "
+                                              "Typical index range: 5–11%."),
 
                                 # 8th "field": submit button
                                 html.Div(
@@ -382,6 +402,42 @@ app.layout = html.Div(
                     ],
                 ),
 
+                # Card: Model info
+                html.Div(
+                    style={
+                        "backgroundColor": "rgba(255,255,255,0.92)",
+                        "border": "1px solid rgba(255,255,255,0.18)",
+                        "borderRadius": "18px",
+                        "padding": "18px",
+                        "boxShadow": "0 12px 35px rgba(0,0,0,0.25)",
+                        "backdropFilter": "blur(6px)",
+                        "width": "100%",
+                        "marginTop": "18px", 
+                        "marginBottom": "18px",
+                    },
+                    children=[
+                        html.H2(
+                            "Model Information",
+                            style={
+                                "margin": "0 0 10px 0",
+                                "fontSize": "18px",
+                                "fontWeight": "800",
+                                "color": "#0b1220",
+                            },
+                        ),
+                        html.Ul(
+                            children=[
+                                html.Li("Model: Random Forest"),
+                                html.Li("Data set size used for training: xxx samples"),
+                                html.Li("Data set size used for testing: xxx samples"),
+                                html.Li("MSE score on test data: xxx"),
+                                html.Li("R² score on test data: xxx"),
+                            ],
+                            style={"margin": "0", "paddingLeft": "20px", "fontSize": "14px"},
+                        ),
+                    ],
+                ),                
+
                 # Footer
                 html.Div(
                     style={
@@ -409,8 +465,6 @@ app.layout = html.Div(
     State("metric-7", "value"),  # UR
     prevent_initial_call=True,
 )
-
-
 
 def predict(n_clicks, cpi, ec, gd, msr, mir, pop, ur):
 
@@ -445,12 +499,40 @@ def predict(n_clicks, cpi, ec, gd, msr, mir, pop, ur):
         yaxis_title="Predicted percentage",
         margin=dict(l=30, r=30, t=30, b=30),
         height=420,
+        # 4 % - line
+        shapes=[  
+            dict(
+                type="line",
+                x0=-0.5,     
+                x1=7.5,       
+                y0=4,         
+                y1=4,        
+                line=dict(
+                    color="red", 
+                    width=2, 
+                    dash="dash"  
+                ),
+            )
+        ]
     )
 
     return fig
 
-
+for i in range(1, 8):  # för alla 7 metrics
+    @app.callback(
+        Output(f"metric-{i}-info", "style"),
+        Input(f"metric-{i}-btn", "n_clicks"),
+        State(f"metric-{i}-info", "style"),
+        prevent_initial_call=True,
+    )
+    def toggle_info(n_clicks, current_style):
+        # Toggle mellan block/none
+        if current_style["display"] == "none":
+            current_style["display"] = "block"
+        else:
+            current_style["display"] = "none"
+        return current_style
 
 if __name__ == "__main__":
     Timer(1, open_browser).start()
-    app.run_server(debug=False, port=port, host=host) #Jag behövde ändra från app.run_server() till app.run() för att få servern att köras
+    app.run(debug=False, port=port, host=host) #Jag behövde ändra från app.run_server() till app.run() för att få servern att köras
