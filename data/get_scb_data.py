@@ -11,6 +11,7 @@ def fetch_scb_data(url, name, filename, query, aggregate):
     values are summed per month. The resulting DataFrame is sorted in
     chronological order and saved as a CSV file.
     """
+
     r = requests.post(url, json=query)
     r.raise_for_status()
     data = r.json()["data"]
@@ -41,7 +42,6 @@ def fetch_scb_data(url, name, filename, query, aggregate):
 
     df.to_csv(f"data/raw_data/{filename}", index=False)
     print(f"Saved {filename}")
-
 
 metrics = []
 with open("data/scb_metrics.json", "r", encoding="utf-8") as f:

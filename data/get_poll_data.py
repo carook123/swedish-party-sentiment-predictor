@@ -4,7 +4,6 @@ import numpy as np
 URL = "https://raw.githubusercontent.com/MansMeg/SwedishPolls/master/Data/Polls.csv"
 party_cols = ["M", "L", "C", "KD", "S", "V", "MP", "SD"]
 
-
 def convert_date(df: pd.DataFrame) -> pd.DataFrame:
     """
     Converts YearMonth column from YYYY-mon to YYYY-MM format
@@ -28,7 +27,6 @@ def convert_date(df: pd.DataFrame) -> pd.DataFrame:
     
     return new_df
 
-
 def drop_excess_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
     Drop all columns except for date, party columns and sample size.
@@ -40,7 +38,6 @@ def drop_excess_columns(df: pd.DataFrame) -> pd.DataFrame:
     filtered_df = filtered_df[cols]
     
     return filtered_df
-
 
 def monthly_weighted_average(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -80,12 +77,12 @@ def monthly_weighted_average(df: pd.DataFrame) -> pd.DataFrame:
     
     return out
 
-
 def linear_interpolation(df: pd.DataFrame) -> pd.DataFrame:
     """
     Fill missing values via linear interpolation per party column,
     but only within the range of existing data for that party. Keep NaN values.
     """
+
     new_df = df.copy()
 
     # Make sure columns are numeric but keep NaN
@@ -122,13 +119,12 @@ def linear_interpolation(df: pd.DataFrame) -> pd.DataFrame:
 
     return new_df
 
-
-
 def normalize_percentages(df: pd.DataFrame) -> pd.DataFrame:
     """
     Round every poll measure to one decimal and make sure all sum up to 100.0
     per month. Keep NaN values.
     """
+
     new_df = df.copy()
 
     # Make sure columns are numeric. Keep NaN.
@@ -165,7 +161,6 @@ def normalize_percentages(df: pd.DataFrame) -> pd.DataFrame:
         new_df.loc[i, rounded.index] = rounded
 
     return new_df
-
 
 if __name__ == "__main__":
     

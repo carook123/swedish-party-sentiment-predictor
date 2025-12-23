@@ -3,7 +3,6 @@ from functools import reduce
 
 parties = ["S", "M", "L", "C", "KD", "V", "MP", "SD"]
 
-
 def load_data(files: map) -> pd.DataFrame:
     """Load and merge multiple CSV files into a single DataFrame, including party polling data.
 
@@ -39,7 +38,7 @@ def load_data(files: map) -> pd.DataFrame:
     df = df.drop('date', axis =1)
     
     return df
-    
+
 def get_X(df):
     """
     Extract feature columns (X) from the full dataset by removing party polling columns.

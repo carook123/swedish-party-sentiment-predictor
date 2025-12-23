@@ -4,7 +4,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
 
-
 def train_party_model(df: pd.DataFrame, X: pd.DataFrame, parties: list) -> dict:
     """Train a separate Random Forest regression model for each political party 
     using macroeconomic and demographic features.
