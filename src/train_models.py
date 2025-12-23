@@ -1,6 +1,7 @@
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
 
 
@@ -35,6 +36,10 @@ def train_party_model(df: pd.DataFrame, X: pd.DataFrame, parties: list) -> dict:
     """
     
     models = {}
+    metrics = {}
+
+    r2_scores = []
+    mse_scores = []
     
     for party in parties:
         y_party = df[party]
@@ -44,11 +49,28 @@ def train_party_model(df: pd.DataFrame, X: pd.DataFrame, parties: list) -> dict:
         model = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)  
         model.fit(X_train, y_train)
         
-        #y_pred = model.predict(X_test)
+        y_pred = model.predict(X_test)
+
+        mse = mean_squared_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+        metrics[party] = {
+            "mse": mse,
+            "r2": r2
+        }
+
+        r2_scores.append(r2)
+        mse_scores.append(mse)
 
         models[party] = model
         
         joblib.dump(model, f"../models/rf_{party}.joblib")
+
+    metrics["average"] = {
+        "mse": float(sum(mse_scores) / len(mse_scores)),
+        "r2": float(sum(r2_scores) / len(r2_scores))
+    }
+    
+    joblib.dump(metrics, "../models/model_metrics.joblib")
 
     return models
 

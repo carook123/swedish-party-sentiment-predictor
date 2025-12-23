@@ -3,6 +3,7 @@ from dash import html, dcc
 import plotly.graph_objects as go
 from threading import Timer
 import webbrowser
+import joblib
 
 from src.predict_sentiment import predict_sentiment
 from dash import Input, Output, State
@@ -11,6 +12,12 @@ from dash import Input, Output, State
 # Server constants
 port = 8050
 host = "localhost"
+
+#loading metrics
+metrics = joblib.load("models/model_metrics.joblib")
+
+avg_r2 = metrics["average"]["r2"]
+avg_mse = metrics["average"]["mse"]
 
 
 def open_browser(host=host, port=port) -> None:
@@ -430,8 +437,8 @@ app.layout = html.Div(
                                 html.Li("Model: Random Forest"),
                                 html.Li("Data set size used for training: xxx samples"),
                                 html.Li("Data set size used for testing: xxx samples"),
-                                html.Li("MSE score on test data: xxx"),
-                                html.Li("R² score on test data: xxx"),
+                                html.Li(f"MSE score on test data: {avg_mse:.3f}"),
+                                html.Li(f"R² score on test data: {avg_r2:.3f}"),
                             ],
                             style={"margin": "0", "paddingLeft": "20px", "fontSize": "14px"},
                         ),
@@ -535,4 +542,4 @@ for i in range(1, 8):  # för alla 7 metrics
 
 if __name__ == "__main__":
     Timer(1, open_browser).start()
-    app.run(debug=False, port=port, host=host) #Jag behövde ändra från app.run_server() till app.run() för att få servern att köras
+    app.run(debug=False, port=port, host=host)
