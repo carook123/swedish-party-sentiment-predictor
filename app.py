@@ -513,6 +513,8 @@ def predict(n_clicks, cpi, ec, gd, msr, mir, pop, ur):
     # Keep party order consistent with chart
     parties = ["M", "L", "C", "KD", "S", "V", "MP", "SD"]
     values = [predictions[p] for p in parties]
+    factor = 100 / sum(values)
+    values = [v * factor for v in values]  
 
     fig = go.Figure(
         data=[
