@@ -1,8 +1,9 @@
 import joblib
 import pandas as pd
 
-
 parties = ["S", "M", "L", "C", "KD", "V", "MP", "SD"]
+
+models = {party: joblib.load(f"models/rf_{party}.joblib") for party in parties}
 
 def predict_sentiment(user_input: dict) -> dict:
     """Predict party polling percentages using pre-trained Random Forest models.
@@ -25,10 +26,11 @@ def predict_sentiment(user_input: dict) -> dict:
     """
     
     X = pd.DataFrame([user_input])
-    predictions = {}
-    
-    for party in parties:
-        model = joblib.load(f"models/rf_{party}.joblib")
-        predictions[party] = float(model.predict(X)[0])
+    #predictions = {}
+    predictions = {party: float(models[party].predict(X)[0]) for party in parties}
+
+    #for party in parties:
+    #    model = joblib.load(f"models/rf_{party}.joblib")
+    #    predictions[party] = float(model.predict(X)[0])
         
     return predictions
