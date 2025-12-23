@@ -210,6 +210,7 @@ bar_fig.update_layout(
     yaxis_title="Percentage of votes",
     margin=dict(l=30, r=30, t=30, b=30),
     height=420,
+    yaxis_range=[0, 50],
     # 4 % - line
     shapes=[  
         dict(
@@ -531,6 +532,7 @@ def predict(n_clicks, cpi, ec, gd, msr, mir, pop, ur):
         yaxis_title="Predicted percentage",
         margin=dict(l=30, r=30, t=30, b=30),
         height=420,
+        yaxis_range=[0, 50],
         shapes=[  
             dict(
                 type="line",
