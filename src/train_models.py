@@ -26,12 +26,6 @@ def train_party_model(df: pd.DataFrame, X: pd.DataFrame, parties: list) -> dict:
     models : dict
         Dictionary where keys are party names and values are the trained 
         RandomForestRegressor models.
-        
-    Notes
-    -----
-    - Ensure that a 'models' directory exists at the path '../models/' 
-      before running this function.
-    - Run this function from the main project directory (one level above 'models').
     """
     
     models = {}
