@@ -26,11 +26,6 @@ def predict_sentiment(user_input: dict) -> dict:
     """
     
     X = pd.DataFrame([user_input])
-    #predictions = {}
     predictions = {party: float(models[party].predict(X)[0]) for party in parties}
-
-    #for party in parties:
-    #    model = joblib.load(f"models/rf_{party}.joblib")
-    #    predictions[party] = float(model.predict(X)[0])
         
     return predictions
