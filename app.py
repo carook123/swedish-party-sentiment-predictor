@@ -571,7 +571,10 @@ def randomize_metrics(n_clicks):
     values = []
     for i in range(1, 8):
         min_val, max_val = metric_ranges[f"metric-{i}"]
-        val = round(random.uniform(min_val, max_val), 2) 
+        if i in [2, 3, 6]:
+            val = int(random.uniform(min_val, max_val))
+        else:
+            val = round(random.uniform(min_val, max_val), 2)
         values.append(val)
     return values
 
