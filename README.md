@@ -1,5 +1,5 @@
 # Swedish Party Sentiment Predictor
-This project attempts to predict Swedish opinion polls based on socially relevant metrics using the classic statistical models Random Forest and Linear Regression.  
+The Swedish Party Sentiment Predictor is a project that explores whether Swedish public opinion polls can be predicted using socially relevant metrics. By using the classic statistical machine learning model Random Forest, the project aims to uncover relationships between societal indicators and party support over time.
 
 This project is the authors' submission to the final project assignment of [LINC-STEM](https://linclund.com/committees/stem/)'s Advanced Python Workshop of autumn 2025. 
 
